@@ -454,6 +454,7 @@ GameObject:
   m_Component:
   - component: {fileID: 318319519}
   - component: {fileID: 318319518}
+  - component: {fileID: 318319520}
   m_Layer: 0
   m_Name: MainGame
   m_TagString: Untagged
@@ -487,6 +488,7 @@ MonoBehaviour:
   values:
   - 
   - 
+  NombreRecursion: 2
 --- !u!4 &318319519
 Transform:
   m_ObjectHideFlags: 0
@@ -501,6 +503,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &318319520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 318319517}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16fbd8606ab48a642afa9974a2452488, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  vs: []
 --- !u!1 &368727755
 GameObject:
   m_ObjectHideFlags: 0

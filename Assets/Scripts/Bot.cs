@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class Bot : MonoBehaviour
 {
@@ -10,6 +11,7 @@ public class Bot : MonoBehaviour
     public bool Botplay=false;
     public string[] values =  new string[2];
     List<string> Historique = new List<string>();
+    public int NombreRecursion = 2;
 
     void Start()
     {
@@ -31,7 +33,7 @@ public class Bot : MonoBehaviour
     {
         if (Botplay)//au bot de jouer
         {
-            CompleteArray(Buttons, 3, Botplay, Historique);
+            CompleteArray(Buttons, NombreRecursion, Botplay, Historique);
             Botplay=!Botplay;
         }
         //Debug.LogError(IsGameFinish());
@@ -127,8 +129,8 @@ public class Bot : MonoBehaviour
     public int CompleteArray(Button[,] Array, int recursionNb, bool botplay, List<string> historique)
     {
         Debug.Log("StartCompleteArray" + " recursion=" + recursionNb);
-        
-
+        List<int> Scores = new List<int>();
+        int indexmax = -1000;
 
 
         string symbol;
@@ -148,8 +150,9 @@ public class Bot : MonoBehaviour
             {
                 Debug.Log("Historique " +historique[i]);
             }
+            historique.Add(ScoreGame(Array).ToString());
             return ScoreGame(Array);
-
+            //return historique;
         }
         else
         {
@@ -160,9 +163,12 @@ public class Bot : MonoBehaviour
                 Debug.Log("Play on  0 0" + " by bot? " + botplay + " recursion="+recursionNb);
                 historique.Add("0,0");
 
-                CompleteArray(Array, recursionNb - 1, !botplay, historique);
+                Scores.Add( CompleteArray(Array, recursionNb - 1, !botplay, historique) );
                 Array[0, 0].GetComponentInChildren<Text>().text = "";
-                historique.RemoveAt(historique.Count);
+                if (historique.Count > 0 && historique != null)
+                {
+                    historique.RemoveAt(historique.Count - 1);
+                }
             }
             if (Array[1, 0].GetComponentInChildren<Text>().text == "")
             {
@@ -171,9 +177,12 @@ public class Bot : MonoBehaviour
                 Debug.Log("Play on  1 0" + " by bot? " + botplay + " recursion=" + recursionNb);
 
                 historique.Add("1,0");
-                CompleteArray(Array, recursionNb - 1, !botplay, historique);
+                Scores.Add( CompleteArray(Array, recursionNb - 1, !botplay, historique));
                 Array[1, 0].GetComponentInChildren<Text>().text = "";
-                historique.RemoveAt(historique.Count);
+                if (historique.Count > 0 && historique != null)
+                {
+                    historique.RemoveAt(historique.Count - 1);
+                }
 
             }
             if (Array[2, 0].GetComponentInChildren<Text>().text == "")
@@ -182,9 +191,13 @@ public class Bot : MonoBehaviour
                 Array[2, 0].GetComponentInChildren<Text>().text = symbol;
                 Debug.Log("Play on  2 0" + " by bot? " + botplay + " recursion=" + recursionNb);
                 historique.Add("2,0");
-                CompleteArray(Array, recursionNb - 1, !botplay, historique);
+                Scores.Add( CompleteArray(Array, recursionNb - 1, !botplay, historique));
                 Array[2, 0].GetComponentInChildren<Text>().text = "";
-                historique.RemoveAt(historique.Count);
+                
+                if (historique.Count > 0 && historique != null)
+                {
+                    historique.RemoveAt(historique.Count - 1);
+                }
 
             }
             if (Array[0, 1].GetComponentInChildren<Text>().text == "")
@@ -193,9 +206,12 @@ public class Bot : MonoBehaviour
                 Array[0, 1].GetComponentInChildren<Text>().text = symbol;
                 Debug.Log("Play on  0 1" + " by bot? " + botplay + " recursion=" + recursionNb);
                 historique.Add("0,1");
-                CompleteArray(Array, recursionNb - 1, !botplay, historique);
+                Scores.Add( CompleteArray(Array, recursionNb - 1, !botplay, historique));
                 Array[0, 1].GetComponentInChildren<Text>().text = "";
-                historique.RemoveAt(historique.Count);
+                if (historique.Count > 0 && historique != null)
+                {
+                    historique.RemoveAt(historique.Count - 1);
+                }
 
             }
             if (Array[1, 1].GetComponentInChildren<Text>().text== "")
@@ -204,9 +220,12 @@ public class Bot : MonoBehaviour
                 Array[1, 1].GetComponentInChildren<Text>().text = symbol;
                 Debug.Log("Play on  1 1" + " by bot? " + botplay + " recursion=" + recursionNb);
                 historique.Add("1,1");
-                CompleteArray(Array, recursionNb - 1, !botplay, historique);
+                Scores.Add(CompleteArray(Array, recursionNb - 1, !botplay, historique));
                 Array[1, 1].GetComponentInChildren<Text>().text = "";
-                historique.removeat(historique.count);
+                if (historique.Count > 0 && historique != null)
+                {
+                    historique.RemoveAt(historique.Count - 1);
+                }
 
             }
             if (Array[2, 1].GetComponentInChildren<Text>().text == "")
@@ -215,13 +234,13 @@ public class Bot : MonoBehaviour
                 Array[2, 1].GetComponentInChildren<Text>().text = symbol;
                 Debug.Log("Play on  2 1" + " by bot? " + botplay + " recursion=" + recursionNb);
                 historique.Add("2,1");
-                CompleteArray(Array, recursionNb - 1, !botplay, historique);
+                Scores.Add(CompleteArray(Array, recursionNb - 1, !botplay, historique));
                 Array[2, 1].GetComponentInChildren<Text>().text = "";
-                if (historique.Count > 0)
+                if (historique.Count > 0 && historique != null)
                 {
-                    historique.RemoveAt(historique.Count);
+                    historique.RemoveAt(historique.Count - 1);
                 }
-                
+
 
             }
             if (Array[0, 2].GetComponentInChildren<Text>().text == "")
@@ -230,11 +249,11 @@ public class Bot : MonoBehaviour
                 Array[0, 2].GetComponentInChildren<Text>().text = symbol;
                 Debug.Log("Play on  0 2" + " by bot? " + botplay + " recursion=" + recursionNb);
                 historique.Add("0,2");
-                CompleteArray(Array, recursionNb - 1, !botplay, historique);
+                Scores.Add(CompleteArray(Array, recursionNb - 1, !botplay, historique));
                 Array[0, 2].GetComponentInChildren<Text>().text = "";
-                if (historique.Count > 0)
+                if (historique.Count > 0 && historique != null)
                 {
-                    historique.RemoveAt(historique.Count);
+                    historique.RemoveAt(historique.Count - 1);
                 }
 
             }
@@ -244,11 +263,11 @@ public class Bot : MonoBehaviour
                 Array[1, 2].GetComponentInChildren<Text>().text = symbol;
                 Debug.Log("Play on  1 2" + " by bot? " + botplay + " recursion=" + recursionNb);
                 historique.Add("1,2");
-                CompleteArray(Array, recursionNb - 1, !botplay, historique);
+                Scores.Add(CompleteArray(Array, recursionNb - 1, !botplay, historique));
                 Array[1, 2].GetComponentInChildren<Text>().text = "";
-                if (historique.Count > 0)
+                if (historique.Count > 0 && historique != null)
                 {
-                    historique.RemoveAt(historique.Count);
+                    historique.RemoveAt(historique.Count - 1);
                 }
 
             }
@@ -258,17 +277,29 @@ public class Bot : MonoBehaviour
                 Array[2, 2].GetComponentInChildren<Text>().text = symbol;
                 Debug.Log("Play on  2 2" + " by bot? " + botplay + " recursion=" + recursionNb);
                 historique.Add("2,2");
-                CompleteArray(Array, recursionNb - 1, !botplay, historique);
+                Scores.Add(CompleteArray(Array, recursionNb - 1, !botplay, historique));
                 Array[2, 2].GetComponentInChildren<Text>().text = "";
-                if (historique.Count>0)
+                if (historique.Count>0 && historique!= null)
                 {
-                    historique.RemoveAt(historique.Count);
+                    historique.RemoveAt(historique.Count-1);
                 }
 
             }
 
+
+            //int indexmax = Scores.IndexOf(Scores.Max());
+            indexmax = Scores.Max();
+            return indexmax;
+
+        }
+        if (recursionNb== NombreRecursion)
+        {
+            Debug.Log("INDEXMAX"+indexmax);
         }
 
+
+
+        Debug.Log("");
         Debug.Log("return -100");
         return -100;
 
