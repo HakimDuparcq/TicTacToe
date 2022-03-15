@@ -144,7 +144,12 @@ public class Bot : MonoBehaviour
         if (recursionNb==0)
         {
             Debug.Log("Score "+ScoreGame(Array));
+            for (int i = 0; i < historique.Count; i++)
+            {
+                Debug.Log("Historique " +historique[i]);
+            }
             return ScoreGame(Array);
+
         }
         else
         {
@@ -157,6 +162,7 @@ public class Bot : MonoBehaviour
 
                 CompleteArray(Array, recursionNb - 1, !botplay, historique);
                 Array[0, 0].GetComponentInChildren<Text>().text = "";
+                historique.RemoveAt(historique.Count);
             }
             if (Array[1, 0].GetComponentInChildren<Text>().text == "")
             {
@@ -167,6 +173,8 @@ public class Bot : MonoBehaviour
                 historique.Add("1,0");
                 CompleteArray(Array, recursionNb - 1, !botplay, historique);
                 Array[1, 0].GetComponentInChildren<Text>().text = "";
+                historique.RemoveAt(historique.Count);
+
             }
             if (Array[2, 0].GetComponentInChildren<Text>().text == "")
             {
@@ -176,6 +184,8 @@ public class Bot : MonoBehaviour
                 historique.Add("2,0");
                 CompleteArray(Array, recursionNb - 1, !botplay, historique);
                 Array[2, 0].GetComponentInChildren<Text>().text = "";
+                historique.RemoveAt(historique.Count);
+
             }
             if (Array[0, 1].GetComponentInChildren<Text>().text == "")
             {
@@ -185,6 +195,8 @@ public class Bot : MonoBehaviour
                 historique.Add("0,1");
                 CompleteArray(Array, recursionNb - 1, !botplay, historique);
                 Array[0, 1].GetComponentInChildren<Text>().text = "";
+                historique.RemoveAt(historique.Count);
+
             }
             if (Array[1, 1].GetComponentInChildren<Text>().text== "")
             {
@@ -194,6 +206,8 @@ public class Bot : MonoBehaviour
                 historique.Add("1,1");
                 CompleteArray(Array, recursionNb - 1, !botplay, historique);
                 Array[1, 1].GetComponentInChildren<Text>().text = "";
+                historique.removeat(historique.count);
+
             }
             if (Array[2, 1].GetComponentInChildren<Text>().text == "")
             {
@@ -203,6 +217,12 @@ public class Bot : MonoBehaviour
                 historique.Add("2,1");
                 CompleteArray(Array, recursionNb - 1, !botplay, historique);
                 Array[2, 1].GetComponentInChildren<Text>().text = "";
+                if (historique.Count > 0)
+                {
+                    historique.RemoveAt(historique.Count);
+                }
+                
+
             }
             if (Array[0, 2].GetComponentInChildren<Text>().text == "")
             {
@@ -212,6 +232,11 @@ public class Bot : MonoBehaviour
                 historique.Add("0,2");
                 CompleteArray(Array, recursionNb - 1, !botplay, historique);
                 Array[0, 2].GetComponentInChildren<Text>().text = "";
+                if (historique.Count > 0)
+                {
+                    historique.RemoveAt(historique.Count);
+                }
+
             }
             if (Array[1, 2].GetComponentInChildren<Text>().text == "")
             {
@@ -221,6 +246,11 @@ public class Bot : MonoBehaviour
                 historique.Add("1,2");
                 CompleteArray(Array, recursionNb - 1, !botplay, historique);
                 Array[1, 2].GetComponentInChildren<Text>().text = "";
+                if (historique.Count > 0)
+                {
+                    historique.RemoveAt(historique.Count);
+                }
+
             }
             if (Array[2, 2].GetComponentInChildren<Text>().text == "")
             {
@@ -230,6 +260,11 @@ public class Bot : MonoBehaviour
                 historique.Add("2,2");
                 CompleteArray(Array, recursionNb - 1, !botplay, historique);
                 Array[2, 2].GetComponentInChildren<Text>().text = "";
+                if (historique.Count>0)
+                {
+                    historique.RemoveAt(historique.Count);
+                }
+
             }
 
         }
