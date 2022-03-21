@@ -2,23 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Linq;
 
 public class test : MonoBehaviour
 {
-    public List<string> vs = new List<string>();
+    public List<int> vs = new List<int>();
 
     void Start()
     {
-        vs.Add("ok1");
-        vs.Add("ok2");
-        vs.Add("ok3");
+        vs.Add(2);
+        vs.Add(10);
+        vs.Add(3);
 
-        vs.RemoveAt(vs.Count-1);
+        Debug.Log( vs.IndexOf(vs.Max()) );
 
-        for (int i = 0; i < vs.Count; i++)
-        {
-            Debug.Log(vs[i]);
-        }
+        
     }
 
     void Update()

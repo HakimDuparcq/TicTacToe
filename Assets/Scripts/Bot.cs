@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 
 public class Bot : MonoBehaviour
 {
@@ -10,9 +11,15 @@ public class Bot : MonoBehaviour
     public Button[,] Buttons = new Button[3, 3];
     public bool Botplay=false;
     public string[] values =  new string[2];
-    List<string> Historique = new List<string>();
-    public int NombreRecursion = 2;
+    List<int> Historique = new List<int>();
+    public int NombreRecursion ; //dans unity
 
+    public int Choice = 100;
+    public Color green;
+    public Color red;
+
+    public GameObject winbar;
+     
     void Start()
     {
         Buttons[0, 0] = ButtonsEnter[0];
@@ -31,52 +38,98 @@ public class Bot : MonoBehaviour
 
     void Update()
     {
+        ScoreGameRenderer(Buttons);
         if (Botplay)//au bot de jouer
         {
             CompleteArray(Buttons, NombreRecursion, Botplay, Historique);
-            Botplay=!Botplay;
+
+            Buttons[Choice % 3, Choice / 3].GetComponentInChildren<Text>().text = values[1];
+            Buttons[Choice % 3, Choice / 3].GetComponentInChildren<Text>().color = red;
+
+            Botplay = !Botplay;
         }
         //Debug.LogError(IsGameFinish());
        // Debug.LogError(Buttons[0, 0].GetComponentInChildren<Text>().text);
     }
 
+    public void OnDifficultyChange(GameObject dropdown)
+    {
+        int difficulty = dropdown.GetComponent<Dropdown>().value;
+        //NombreRecursion = (int)Math.Pow(difficulty, 3) + 1;
+        
+        if (difficulty == 0)
+        {
+            NombreRecursion = 1;
+        }
+        if (difficulty == 1)
+        {
+            NombreRecursion = 2;
+        }
+        if (difficulty == 2)
+        {
+            NombreRecursion = 8;
+        }
+
+    }
+
+    IEnumerator WaitForOneSeconde(bool doublle)
+    {
+        yield return new WaitForSeconds(0.1f);
+        if (doublle)
+        {
+            OnButtonClickedRestart(false);
+        }
+    }
+
+
+    public void OnButtonClickedRestart(bool doublle)
+    {
+        for (int i = 0; i < 9; i++)
+        {
+            Buttons[i % 3, i / 3].GetComponentInChildren<Text>().text = "";
+        }
+        for (int i = 0; i < 9; i++)
+        {
+            Buttons[i % 3, i / 3].GetComponentInChildren<Text>().text = "";
+        }
+        StartCoroutine(WaitForOneSeconde(doublle));
+        
+    }
 
     public void OnButtonClicked(GameObject but)
     {
         Text textt = but.GetComponentInChildren<Text>();
         textt.text = "X";
+        textt.color = green;
         Botplay = true;
     }
 
-
-
-
-    public bool IsGameFinish()
+    public void OnButtonClickedForDebugg(GameObject but)
     {
-        for (int i = 0; i < values.Length; i++)
-        {
-            //ligne
-            if (Buttons[0, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 0].GetComponentInChildren<Text>().text == values[i]  )
-            {
-                return true;
-            }
-
-            if (Buttons[0, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 1].GetComponentInChildren<Text>().text == values[i])
-            {
-                return true;
-            }
-
-            if (Buttons[0, 2].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 2].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 2].GetComponentInChildren<Text>().text == values[i])
-            {
-                return true;
-            }
-
-            //colonne
-        }
-
-
-        return false;
+        Botplay = true;
     }
+
+    public bool GameFinish(Button[,] Buttons)
+    {
+        int compteur = 0;
+        for (int i = 0; i < 9; i++)
+        {
+            if (Buttons[i % 3, i / 3].GetComponentInChildren<Text>().text != "")
+            {
+                compteur++;
+            }
+        }
+        if (compteur==9)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+        
+    }
+
 
     public int ScoreGame(Button[,] Buttons)
     {
@@ -120,18 +173,160 @@ public class Bot : MonoBehaviour
             }
 
             //colonne
+            if (Buttons[0, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[0, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[0, 2].GetComponentInChildren<Text>().text == values[i])
+            {
+                if (values[i] == "O")
+                {
+                    return 1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            if (Buttons[1, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 2].GetComponentInChildren<Text>().text == values[i])
+            {
+                if (values[i] == "O")
+                {
+                    return 1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            if (Buttons[2, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 2].GetComponentInChildren<Text>().text == values[i])
+            {
+                if (values[i] == "O")
+                {
+                    return 1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+
+            //diag
+            if (Buttons[0, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 2].GetComponentInChildren<Text>().text == values[i])
+            {
+                if (values[i] == "O")
+                {
+                    return 1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            if (Buttons[0, 2].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 0].GetComponentInChildren<Text>().text == values[i])
+            {
+                if (values[i] == "O")
+                {
+                    return 1;
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+
         }
 
 
         return 0;
     }
 
-    public int CompleteArray(Button[,] Array, int recursionNb, bool botplay, List<string> historique)
+    public void ScoreGameRenderer(Button[,] Buttons)
     {
-        Debug.Log("StartCompleteArray" + " recursion=" + recursionNb);
-        List<int> Scores = new List<int>();
-        int indexmax = -1000;
+        for (int i = 0; i < values.Length; i++)
+        {
+            //ligne
+            if (Buttons[0, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 0].GetComponentInChildren<Text>().text == values[i])
+            {
+                winbar.SetActive(true);
+                winbar.GetComponent<RectTransform>().sizeDelta = new Vector2(21.62f, 747.4f);
+                winbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(-272.57f, -356.98f);
+                winbar.GetComponent<RectTransform>().rotation  = Quaternion.Euler(new Vector3(0, 0, 90));
+                return;
+            }
 
+            else if (Buttons[0, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 1].GetComponentInChildren<Text>().text == values[i])
+            {
+                winbar.SetActive(true);
+                winbar.GetComponent<RectTransform>().sizeDelta = new Vector2(21.62f, 747.4f);
+                winbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(-272.57f, -88.9f);
+                winbar.GetComponent<RectTransform>().rotation = Quaternion.Euler(new Vector3(0, 0, 90));
+                return;
+            }
+
+            else if (Buttons[0, 2].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 2].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 2].GetComponentInChildren<Text>().text == values[i])
+            {
+                winbar.SetActive(true);
+                winbar.GetComponent<RectTransform>().sizeDelta = new Vector2(21.62f, 747.4f);
+                winbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(-272.57f, 182.8f);
+                winbar.GetComponent<RectTransform>().rotation = Quaternion.Euler(new Vector3(0, 0, 90));
+                return;
+            }
+
+            //colonne
+            else if (Buttons[0, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[0, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[0, 2].GetComponentInChildren<Text>().text == values[i])
+            {
+                winbar.SetActive(true);
+                winbar.GetComponent<RectTransform>().sizeDelta = new Vector2(21.62f, 747.4f);
+                winbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(-560.8f, -85.2f);
+                winbar.GetComponent<RectTransform>().rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                return;
+            }
+            else if (Buttons[1, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 2].GetComponentInChildren<Text>().text == values[i])
+            {
+                winbar.SetActive(true);
+                winbar.GetComponent<RectTransform>().sizeDelta = new Vector2(21.62f, 747.4f);
+                winbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(-273f, -85.2f);
+                winbar.GetComponent<RectTransform>().rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                return;
+            }
+            else if (Buttons[2, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 2].GetComponentInChildren<Text>().text == values[i])
+            {
+                winbar.SetActive(true);
+                winbar.GetComponent<RectTransform>().sizeDelta = new Vector2(21.62f, 747.4f);
+                winbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(25.1f, -85.2f);
+                winbar.GetComponent<RectTransform>().rotation = Quaternion.Euler(new Vector3(0, 0, 0));
+                return;
+            }
+
+            //diag
+            else if (Buttons[0, 0].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 2].GetComponentInChildren<Text>().text == values[i])
+            {
+                winbar.SetActive(true);
+                winbar.GetComponent<RectTransform>().sizeDelta = new Vector2(21.62f, 997.5f);
+                winbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(-275.1f, -85.2f);
+                winbar.GetComponent<RectTransform>().rotation = Quaternion.Euler(new Vector3(0, 0, -45));
+                return;
+            }
+            else if (Buttons[0, 2].GetComponentInChildren<Text>().text == values[i] && Buttons[1, 1].GetComponentInChildren<Text>().text == values[i] && Buttons[2, 0].GetComponentInChildren<Text>().text == values[i])
+            {
+                winbar.SetActive(true);
+                winbar.GetComponent<RectTransform>().sizeDelta = new Vector2(21.62f, 997.5f);
+                winbar.GetComponent<RectTransform>().anchoredPosition = new Vector2(-259.5f, -97.4f);
+                winbar.GetComponent<RectTransform>().rotation = Quaternion.Euler(new Vector3(0, 0, 45));
+                return;
+            }
+            else
+            {
+                winbar.SetActive(false);
+
+                
+            }
+        }
+
+    }
+
+    public List<int> CompleteArray(Button[,] Array, int recursionNb, bool botplay, List<int> historique)
+    {
+        //Debug.Log("StartCompleteArray" + " recursion=" + recursionNb);
+        List<int> Scores = new List<int>();
+        List<int> ScoresTempo = new List<int>();
 
         string symbol;
         if (botplay)
@@ -140,188 +335,76 @@ public class Bot : MonoBehaviour
         }
         else
         {
-            symbol = "X";
+            symbol = "X";  // X   here 
         }
 
-        if (recursionNb==0)
+        if (recursionNb==0 || ScoreGame(Array)!=0 || GameFinish(Array))
         {
-            Debug.Log("Score "+ScoreGame(Array));
-            for (int i = 0; i < historique.Count; i++)
-            {
-                Debug.Log("Historique " +historique[i]);
-            }
-            historique.Add(ScoreGame(Array).ToString());
-            return ScoreGame(Array);
-            //return historique;
+            //Debug.Log("Score "+ScoreGame(Array));
+            return new List<int>() { ScoreGame(Array), historique[historique.Count - 1] };
+ 
         }
         else
         {
-            if (Array[0, 0].GetComponentInChildren<Text>().text == "")//si c'est libre 
+            for (int i = 0; i < 9; i++)
             {
-                
-                Array[0, 0].GetComponentInChildren<Text>().text = symbol; // je joue
-                Debug.Log("Play on  0 0" + " by bot? " + botplay + " recursion="+recursionNb);
-                historique.Add("0,0");
-
-                Scores.Add( CompleteArray(Array, recursionNb - 1, !botplay, historique) );
-                Array[0, 0].GetComponentInChildren<Text>().text = "";
-                if (historique.Count > 0 && historique != null)
+                if (Array[i % 3, i / 3].GetComponentInChildren<Text>().text == "")//si c'est libre 
                 {
-                    historique.RemoveAt(historique.Count - 1);
+
+                    Array[i % 3, i / 3].GetComponentInChildren<Text>().text = symbol; // je joue
+                                                                              //Debug.Log("Play on  0 0" + " by bot? " + botplay + " recursion="+recursionNb);
+                    historique.Add(i);
+
+                    ScoresTempo = CompleteArray(Array, recursionNb - 1, !botplay, historique);
+                    for (int ii = 0; ii < ScoresTempo.Count; ii++)
+                    {
+                        Scores.Add(ScoresTempo[ii]);
+                    }
+                    ScoresTempo = new List<int>();
+                    Array[i % 3, i / 3].GetComponentInChildren<Text>().text = "";
+
+                    if (historique.Count > 0 && historique != null)
+                    {
+                        historique.RemoveAt(historique.Count - 1);
+                    }
                 }
             }
-            if (Array[1, 0].GetComponentInChildren<Text>().text == "")
-            {
-                
-                Array[1, 0].GetComponentInChildren<Text>().text = symbol;
-                Debug.Log("Play on  1 0" + " by bot? " + botplay + " recursion=" + recursionNb);
-
-                historique.Add("1,0");
-                Scores.Add( CompleteArray(Array, recursionNb - 1, !botplay, historique));
-                Array[1, 0].GetComponentInChildren<Text>().text = "";
-                if (historique.Count > 0 && historique != null)
-                {
-                    historique.RemoveAt(historique.Count - 1);
-                }
-
-            }
-            if (Array[2, 0].GetComponentInChildren<Text>().text == "")
-            {
-                
-                Array[2, 0].GetComponentInChildren<Text>().text = symbol;
-                Debug.Log("Play on  2 0" + " by bot? " + botplay + " recursion=" + recursionNb);
-                historique.Add("2,0");
-                Scores.Add( CompleteArray(Array, recursionNb - 1, !botplay, historique));
-                Array[2, 0].GetComponentInChildren<Text>().text = "";
-                
-                if (historique.Count > 0 && historique != null)
-                {
-                    historique.RemoveAt(historique.Count - 1);
-                }
-
-            }
-            if (Array[0, 1].GetComponentInChildren<Text>().text == "")
-            {
-                
-                Array[0, 1].GetComponentInChildren<Text>().text = symbol;
-                Debug.Log("Play on  0 1" + " by bot? " + botplay + " recursion=" + recursionNb);
-                historique.Add("0,1");
-                Scores.Add( CompleteArray(Array, recursionNb - 1, !botplay, historique));
-                Array[0, 1].GetComponentInChildren<Text>().text = "";
-                if (historique.Count > 0 && historique != null)
-                {
-                    historique.RemoveAt(historique.Count - 1);
-                }
-
-            }
-            if (Array[1, 1].GetComponentInChildren<Text>().text== "")
-            {
-                
-                Array[1, 1].GetComponentInChildren<Text>().text = symbol;
-                Debug.Log("Play on  1 1" + " by bot? " + botplay + " recursion=" + recursionNb);
-                historique.Add("1,1");
-                Scores.Add(CompleteArray(Array, recursionNb - 1, !botplay, historique));
-                Array[1, 1].GetComponentInChildren<Text>().text = "";
-                if (historique.Count > 0 && historique != null)
-                {
-                    historique.RemoveAt(historique.Count - 1);
-                }
-
-            }
-            if (Array[2, 1].GetComponentInChildren<Text>().text == "")
-            {
-                
-                Array[2, 1].GetComponentInChildren<Text>().text = symbol;
-                Debug.Log("Play on  2 1" + " by bot? " + botplay + " recursion=" + recursionNb);
-                historique.Add("2,1");
-                Scores.Add(CompleteArray(Array, recursionNb - 1, !botplay, historique));
-                Array[2, 1].GetComponentInChildren<Text>().text = "";
-                if (historique.Count > 0 && historique != null)
-                {
-                    historique.RemoveAt(historique.Count - 1);
-                }
-
-
-            }
-            if (Array[0, 2].GetComponentInChildren<Text>().text == "")
-            {
-                
-                Array[0, 2].GetComponentInChildren<Text>().text = symbol;
-                Debug.Log("Play on  0 2" + " by bot? " + botplay + " recursion=" + recursionNb);
-                historique.Add("0,2");
-                Scores.Add(CompleteArray(Array, recursionNb - 1, !botplay, historique));
-                Array[0, 2].GetComponentInChildren<Text>().text = "";
-                if (historique.Count > 0 && historique != null)
-                {
-                    historique.RemoveAt(historique.Count - 1);
-                }
-
-            }
-            if (Array[1, 2].GetComponentInChildren<Text>().text == "")
-            {
-                
-                Array[1, 2].GetComponentInChildren<Text>().text = symbol;
-                Debug.Log("Play on  1 2" + " by bot? " + botplay + " recursion=" + recursionNb);
-                historique.Add("1,2");
-                Scores.Add(CompleteArray(Array, recursionNb - 1, !botplay, historique));
-                Array[1, 2].GetComponentInChildren<Text>().text = "";
-                if (historique.Count > 0 && historique != null)
-                {
-                    historique.RemoveAt(historique.Count - 1);
-                }
-
-            }
-            if (Array[2, 2].GetComponentInChildren<Text>().text == "")
-            {
-                
-                Array[2, 2].GetComponentInChildren<Text>().text = symbol;
-                Debug.Log("Play on  2 2" + " by bot? " + botplay + " recursion=" + recursionNb);
-                historique.Add("2,2");
-                Scores.Add(CompleteArray(Array, recursionNb - 1, !botplay, historique));
-                Array[2, 2].GetComponentInChildren<Text>().text = "";
-                if (historique.Count>0 && historique!= null)
-                {
-                    historique.RemoveAt(historique.Count-1);
-                }
-
-            }
-
-
-            //int indexmax = Scores.IndexOf(Scores.Max());
-            indexmax = Scores.Max();
-            return indexmax;
-
         }
-        if (recursionNb== NombreRecursion)
+
+
+        //Debug.Log("ScoreMaxStart");
+        List<int> RealScore = new List<int>();
+        List<int> RealPosition = new List<int>();
+        for (int i = 0; i < Scores.Count/2; i++)
         {
-            Debug.Log("INDEXMAX"+indexmax);
+            //Debug.Log("ScoreMax "+ Scores[i*2] + " " + Scores[i * 2 +1]);
+            RealScore.Add(Scores[i * 2]);
+            RealPosition.Add(Scores[i * 2 + 1]);
+        }
+
+        int scoremax;
+        if (botplay)//botplay
+        {
+            scoremax = RealScore.Max();
+        }
+        else
+        {
+            scoremax = RealScore.Min();
+        }
+        int pos = RealPosition[ RealScore.IndexOf(scoremax) ];
+        //Debug.Log("ScoreMax "+scoremax + "   Taille " + Scores.Count + "   bestposition "+ pos + " recursion=" + recursionNb);
+
+        if (recursionNb == NombreRecursion)
+        {
+            //Debug.LogError("TEs");
+            Choice = pos;
         }
 
 
-
-        Debug.Log("");
-        Debug.Log("return -100");
-        return -100;
-
-
-
-
-
-
-        
+        if (historique.Count>0)
+        {
+            return new List<int>() { scoremax, historique[historique.Count - 1] };
+        }
+        return new List<int>() { scoremax, -2 };
     }
-        
-
-        
-    
-
-
-
-
-
-
-
-
-
-
 }
