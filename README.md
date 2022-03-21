@@ -1,10 +1,10 @@
 # TicTacToe
 
 ReadeME :  
-          download the project, extract it, run /Builds/Tictactoe.exe
+download the project, extract it, run /Builds/Tictactoe.exe
 
-          select the mode (easy, medium, hard)
+select the mode (easy, medium, hard)
 
-          play first or let my ia the first move,
+play first or let my ia the first move,
 
-          restart the game
+restart the game
